@@ -260,20 +260,55 @@ export function GritProvider({ children }) {
 
   const deleteSlot = (slotId) => {
     const slot = slots.find(s => s.id === slotId);
-    if (!slot || slot.status === 'booked') {
-      showToast('Cannot Delete', 'Booked slots cannot be deleted directly.', 'error');
-      return false;
+    if (!slot) return false;
+
+    // Check if slot was booked by any candidate
+    const bookedStudentId = slot.bookedByStudentId || students.find(s => s.bookedSlotId === slotId)?.id;
+
+    // If booked, immediately release candidate back to unbooked so they can book another slot
+    if (bookedStudentId) {
+      setStudents(prev => prev.map(std => {
+        if (std.id === bookedStudentId || std.bookedSlotId === slotId) {
+          return {
+            ...std,
+            bookingStatus: 'unbooked',
+            bookedSlotId: null,
+            eligibilityStatus: 'Eligible',
+            interviewerReview: null,
+            evaluation: null,
+            deadlineDaysRemaining: std.deadlineDaysRemaining || 5
+          };
+        }
+        return std;
+      }));
+      setStudentStateOverride('auto');
     }
 
+    // Remove slot from slots list
     setSlots(prev => prev.filter(s => s.id !== slotId));
+
+    // Update interviewer slot counts
     setInterviewers(prev => prev.map(i => {
       if (i.id === slot.interviewerId) {
-        return { ...i, totalSlots: Math.max(0, i.totalSlots - 1) };
+        return {
+          ...i,
+          totalSlots: Math.max(0, i.totalSlots - 1),
+          bookedSlots: slot.status === 'booked' ? Math.max(0, i.bookedSlots - 1) : i.bookedSlots
+        };
       }
       return i;
     }));
 
-    showToast('Slot Removed', 'Availability slot deleted successfully.', 'info');
+    if (bookedStudentId) {
+      const studentName = slot.bookedByStudentName || 'Candidate';
+      showToast(
+        'Slot Deleted • Candidate Released',
+        `Slot deleted. ${studentName} is now unbooked and can immediately choose a new interview slot.`,
+        'warning'
+      );
+    } else {
+      showToast('Slot Deleted', 'Availability slot deleted successfully.', 'info');
+    }
     return true;
   };
 

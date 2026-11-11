@@ -4,7 +4,6 @@ import GritCard from '../common/GritCard';
 import GritBadge from '../common/GritBadge';
 import GritButton from '../common/GritButton';
 import AddAvailabilityModal from './AddAvailabilityModal';
-import ModifySlotModal from './ModifySlotModal';
 import InterviewerReportModal from './InterviewerReportModal';
 import SimulatedCallModal from '../common/SimulatedCallModal';
 import {
@@ -46,7 +45,6 @@ export default function InterviewerDashboard() {
 
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingSlot, setEditingSlot] = useState(null);
   const [activeCallSlot, setActiveCallSlot] = useState(null);
   const [reportModalSlot, setReportModalSlot] = useState(null);
 
@@ -497,37 +495,33 @@ export default function InterviewerDashboard() {
                             </button>
                           )}
 
-                          {/* 2. MODIFY SLOT (CRUD: UPDATE) */}
-                          <button
-                            onClick={() => setEditingSlot(slot)}
-                            className="p-1.5 rounded-lg border border-stone-300 hover:border-[#1E0404] bg-white text-stone-700 hover:bg-stone-100 transition-colors flex items-center gap-1 font-heading font-bold text-[11px]"
-                            title="Modify slot details (date, time, track)"
-                          >
-                            <Edit3 className="w-3 h-3" />
-                            <span>Modify</span>
-                          </button>
-
-                          {/* 3. PAUSE / ACTIVATE TOGGLE */}
+                          {/* 2. PAUSE / ACTIVATE TOGGLE (Available slots only) */}
                           {!isBooked && !isCompleted && !isNoShow && !isMalpractice && (
                             <button
                               onClick={() => toggleSlotStatus(slot.id)}
-                              className="px-2 py-1 rounded-lg border border-stone-300 hover:border-[#1E0404] bg-white text-stone-600 hover:text-[#1E0404] transition-colors text-[11px] font-bold"
+                              className="px-2 py-1 rounded-lg border border-stone-300 hover:border-[#1E0404] bg-white text-stone-600 hover:text-[#1E0404] transition-colors text-[11px] font-bold shrink-0"
                               title="Toggle active status"
                             >
                               {isCancelled ? 'Activate' : 'Pause'}
                             </button>
                           )}
 
-                          {/* 4. DELETE SLOT (CRUD: DELETE) */}
-                          {!isBooked && !isCompleted && !isNoShow && !isMalpractice ? (
-                            <button
-                              onClick={() => deleteSlot(slot.id)}
-                              className="p-1.5 rounded-lg border border-stone-300 hover:border-[#D74247] hover:bg-rose-50 text-stone-400 hover:text-[#D74247] transition-colors"
-                              title="Delete availability slot"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          ) : null}
+                          {/* 3. DELETE SLOT (CRUD: DELETE) - Deletes slot & releases student to book again */}
+                          <button
+                            onClick={() => {
+                              const confirmMsg = isBooked
+                                ? `Delete this slot? Since it is booked by ${slot.bookedByStudentName || 'the student'}, they will be unbooked immediately and can instantly book a new slot on their dashboard.`
+                                : `Delete this availability slot (${formattedDate} at ${slot.startTime})?`;
+                              if (confirm(confirmMsg)) {
+                                deleteSlot(slot.id);
+                              }
+                            }}
+                            className="px-2.5 py-1 rounded-lg border border-rose-300 hover:border-[#D74247] bg-white hover:bg-rose-50 text-stone-700 hover:text-[#D74247] transition-colors font-heading font-bold text-[11px] flex items-center gap-1 shrink-0"
+                            title={isBooked ? "Delete slot & release student to re-book immediately" : "Delete availability slot"}
+                          >
+                            <Trash2 className="w-3 h-3 text-[#D74247] shrink-0" />
+                            <span>Delete Slot</span>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -543,13 +537,6 @@ export default function InterviewerDashboard() {
       <AddAvailabilityModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-      />
-
-      {/* CRUD: Modify Slot Modal (UPDATE) */}
-      <ModifySlotModal
-        isOpen={Boolean(editingSlot)}
-        onClose={() => setEditingSlot(null)}
-        slot={editingSlot}
       />
 
       {/* Interactive Live Interview Sandbox */}
