@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --grit-dark: #1E0404;
+    --grit-cream: #FFFEF7;
+    --grit-red: #D74247;
+    --grit-yellow: #F4DF38;
+    --grit-purple: #70449C;
+    --grit-blue: #4277FB;
+  }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--grit-cream);
+    color: var(--grit-dark);
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Familjen Grotesk', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Grit Neo-Brutalist Utilities */
+.grit-border {
+  border: 2.5px solid #1E0404;
+}
+
+.grit-border-thin {
+  border: 1.5px solid #1E0404;
+}
+
+.grit-shadow {
+  box-shadow: 4px 4px 0px #1E0404;
+}
+
+.grit-shadow-sm {
+  box-shadow: 2px 2px 0px #1E0404;
+}
+
+.grit-shadow-lg {
+  box-shadow: 6px 6px 0px #1E0404;
+}
+
+.grit-btn {
+  border: 2px solid #1E0404;
+  box-shadow: 3px 3px 0px #1E0404;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-weight: 700;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.grit-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #1E0404;
+}
+
+.grit-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #1E0404;
+}
+
+.grit-card {
+  border: 2.5px solid #1E0404;
+  box-shadow: 4px 4px 0px #1E0404;
+  background-color: #FFFFFF;
+}
+
+.grit-badge {
+  border: 1.5px solid #1E0404;
+  font-family: 'Familjen Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  padding: 0.22rem 0.65rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  gap: 0.35rem;
+  box-sizing: border-box;
+}
+
