@@ -5,7 +5,6 @@ import GritBadge from '../common/GritBadge';
 import GritButton from '../common/GritButton';
 import SlotBookingModal from './SlotBookingModal';
 import StudentResultView from './StudentResultView';
-import CourseRoadmap from './CourseRoadmap';
 import {
   Calendar,
   Clock,
@@ -474,12 +473,6 @@ export default function StudentDashboard() {
           onBookAgainClick={() => setIsBookingModalOpen(true)}
         />
       )}
-
-      {/* 6. Course & Badge Progression Flow */}
-      <CourseRoadmap
-        student={currentStudent}
-        onBookSlotClick={() => setIsBookingModalOpen(true)}
-      />
 
       {/* Booking Slot Modal */}
       <SlotBookingModal
